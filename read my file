@@ -1,0 +1,27 @@
+def countword(filename):
+    word_count={}
+
+  try:
+      with open(filename, 'r') as file:
+            for line in file:
+                words = line.strip().split()
+                for word in words:
+                    word = word.strip('.,!?()[]{}":;')
+                    word=word.lower()
+                    
+                    if word in word_count:
+                         word_count[word]+=1
+                    else:
+                         word_count[word]=1
+        return word_count
+    except FileNotFoundError:
+        print(f"file '{filename}' not found.")
+        return {}
+    except Exception as e:
+        print(f"An error occured: {e}")
+        return {}
+filename='enter your txt file name' #replace with your txt file
+word_occurrence=countword(filename)
+for word,count in word_occurrence.items():
+    print(f'{word}: {count}')
+              
