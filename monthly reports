@@ -1,0 +1,51 @@
+import sqlite3
+
+def add_expense(sate,category,description,amount):
+    conn = sqlite3.connect('expenses.db')
+    cursor=conn.cursor()
+    cursor.execute("INSERT INTO expenses (date, category, description, amount) VALUES (?, ?, ?, ?)", (date, category, description, amount))
+    con.commit()
+    conn.close()
+
+def generate_monthly_report(year,month):
+    conn=sqlite3.connect('expenses.db')
+    cursor=con.cursor()
+    cursor.execute("SELECT date, category, description, amount FROM expenses WHERE strftime('%Y-%m', date) = ?", (year + '-' + month,))
+    expenses=cursor.fetchall()
+    con.close()
+
+    return expenses
+
+def main():
+    print("Personal expense Traker")
+    while True:
+        print("\noptions:")
+        print("1.Add Expense:")
+        print("2.Generate monthly report")
+        print("3. Exit")
+
+        choice=input("Enter your choice")
+
+        if choice == "1":
+            data = input("Enter the date (DD-MM-YYYY):  ")
+            category =input("Enter the category: ")
+            description= input("Enter the description: ")
+            amount=float(input("Enter the amount: /-"))
+            add_expense(date,category,description,amount)  
+            print("Expense added successfully!")
+        elif choice == "2":
+            year = input("Enter the year (YYYY): ")
+            Month= input("Enter the month ( MM): ")
+            expenses =  generate_monthly_report(year,month)
+            total = sum(expense[3] for expense in expenses)
+
+            print(f"\nMonthly report for {year}-{Month}")
+            print(f"Total Expenses: /-{total:2f}\n")
+
+            for expense in expenses:
+                print(f"Date: {expenses[0]}, category: {expense[1]}, Description: {expense[2]}, Amount: ${expense[3]:.2f}")")
+
+        elif choice == "3":
+            break
+if__name__=='__main__':
+    main()
