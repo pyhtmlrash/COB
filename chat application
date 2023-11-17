@@ -1,0 +1,57 @@
+pip install websockets
+import asyncio
+import websockets
+
+async def handle_client(websocket, path):
+    try:
+        async for message in websocket:
+            # Broadcast the message to all connected clients
+            await asyncio.gather(
+                *[client.send(message) for client in clients]
+            )
+    except websockets.ConnectionClosed:
+        # Remove the disconnected client from the list
+        clients.remove(websocket)
+
+# List to keep track of connected clients
+clients = set()
+
+async def main():
+    server = await websockets.serve(handle_client, "localhost", 8765)
+
+    print("Chat server is running. Press Ctrl+C to stop.")
+
+    # Wait for the server to complete (e.g., due to a keyboard interrupt)
+    await server.wait_closed()
+
+# Run the server
+asyncio.run(main())
+import asyncio
+import websockets
+
+async def receive_messages(uri):
+    async with websockets.connect(uri) as websocket:
+        while True:
+            # Receive and print messages from the server
+            message = await websocket.recv()
+            print(message)
+
+async def send_messages(uri):
+    async with websockets.connect(uri) as websocket:
+        while True:
+            # Get user input and send it to the server
+            message = input("Enter message: ")
+            await websocket.send(message)
+
+async def main():
+    # Change the server URI to match the actual server address
+    server_uri = "ws://localhost:8765"
+
+    # Run both sending and receiving tasks concurrently
+    await asyncio.gather(
+        receive_messages(server_uri),
+        send_messages(server_uri),
+    )
+
+# Run the client
+asyncio.run(main())
